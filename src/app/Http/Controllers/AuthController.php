@@ -14,7 +14,7 @@ class AuthController extends Controller
 
     public function store(AuthorRequest $request)
     {
-        var_dump('test');
+        var_dump('ok');
         $request->authenticate();
 
         $request->session()->regenerate();

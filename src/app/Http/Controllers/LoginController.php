@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Auth\LoginRequest;
+
+class LoginController extends Controller
+{
+    public function getIndex()
+    {
+        var_dump('test');
+        //ログインページを表示
+        return view('auth.login');
+    }
+
+    public function postIndex(LoginRequest $request)
+    {
+        $email = $request->email;
+        $password = $request->password;
+        if (Auth::attempt([
+            'email' => $email,
+            'password' => $password
+        ])) {
+            //ログイン成功
+            return redirect('/');
+        } else {
+            //ログイン失敗
+            return redirect('/login');
+        }
+    }
+}

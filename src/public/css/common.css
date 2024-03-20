@@ -1,5 +1,5 @@
 .header {
-    background: #000;
+    background: rgb(235, 229, 229);
 }
 
 .header__inner {
@@ -15,7 +15,7 @@
 }
 
 .header__logo {
-    color: #fff;
+    color: white;
     text-decoration: none;
     font-weight: bold;
     font-size: 24px;
@@ -32,14 +32,14 @@
 }
 
 .header-nav__link {
-    color: #fff;
+    color: black;
     text-decoration: none;
 }
 
 .header-nav__button {
     border: none;
     background: transparent;
-    color: #fff;
+    color: black;
     font-size: 16px;
     cursor: pointer;
 }
