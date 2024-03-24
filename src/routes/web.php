@@ -36,7 +36,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';
 
 
 
@@ -48,7 +48,7 @@ Route::post('/login', [LoginController::class, 'postIndex'])->name('login');
 Route::get('/', [AttendanceController::class, 'index'])->middleware('auth');
 Route::post('/', [AttendanceController::class, 'index'])->middleware('auth');
 
-// Route::get('/', [AttendanceController::class, 'index']);
+
 
 Route::post('/workStart', [AttendanceController::class, 'workStart']);
 Route::post('/workEnd', [AttendanceController::class, 'workEnd']);

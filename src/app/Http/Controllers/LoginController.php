@@ -14,6 +14,7 @@ class LoginController extends Controller
         var_dump('test');
         //ログインページを表示
         return view('auth.login');
+        // view→auth→login
     }
 
     public function postIndex(LoginRequest $request)

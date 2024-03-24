@@ -1,36 +1,92 @@
 @extends('layouts.app')
-
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/index.css') }}">
 @endsection
 
-@section('content')
-<div class="attendance__alert">
-  // メッセージ機能
-</div>
+<head>
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
 
-<div class="attendance__content">
-  <div class="attendance__panel">
-    <form class="attendance__button">
-      <button class="attendance__button-submit" type="submit">勤務開始</button>
-    </form>
-    <form class="attendance__button">
-      <button class="attendance__button-submit" type="submit">勤務終了</button>
-    </form>
+@section('title', '打刻ページ')
+@section('content')
+
+
+
+<main>
+  <div class="main__title">
+    @if(Auth::check())
+    <p>{{$user->name}}さんお疲れ様です！</p>
+    @endif
   </div>
-  <div class="attendance-table">
-    <table class="attendance-table__inner">
-      <tr class="attendance-table__row">
-        <th class="attendance-table__header">名前</th>
-        <th class="attendance-table__header">開始時間</th>
-        <th class="attendance-table__header">終了時間</th>
-      </tr>
-      <tr class="attendance-table__row">
-        <td class="attendance-table__item">サンプル太郎</td>
-        <td class="attendance-table__item">サンプル</td>
-        <td class="attendance-table__item">サンプル</td>
-      </tr>
-    </table>
+
+
+
+  <div class="main__attendance">
+    <div class="attendance__left">
+
+
+      <!-- 勤務開始 -->
+      @if($isWorkStarted)
+      <form action="/workStart" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">勤務開始</button>
+      </form>
+      @else
+      <form action="/workStart" method="POST" class="timestamp">
+        @csrf
+        <button class="button1">勤務開始</button>
+      </form>
+      @endif
+      <!-- 休憩開始 -->
+      @if($isWorkStarted && $isRestStarted)
+      <form action="/restStart" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">休憩開始</button>
+      </form>
+      @elseif($isWorkStarted)
+      <form action="/restStart" method="POST" class="timestamp">
+        @csrf
+        <button class="button2">休憩開始</button>
+      </form>
+      @else
+      <form action="/restStart" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">休憩開始</button>
+      </form>
+      @endif
+    </div>
+    <div class="attendance__right">
+      <!-- 勤務終了 -->
+      @if($isWorkStarted)
+      <form action="/workEnd" method="POST" class="timestamp">
+        @csrf
+        <button class="button3">勤務終了</button>
+      </form>
+      @elseif($isWorkStarted && $isWorkEnded)
+      <form action="/workEnd" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">勤務終了</button>
+      </form>
+      @else
+      <form action="/workEnd" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">勤務終了</button>
+      </form>
+      @endif
+      <!-- 休憩終了 -->
+      @if(($isWorkStarted) && ($isRestStarted))
+      <form action="/restEnd" method="POST" class="timestamp">
+        @csrf
+        <button class="button4">休憩終了</button>
+      </form>
+      @else
+      <form action="/restEnd" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">休憩終了</button>
+      </form>
+      @endif
+    </div>
   </div>
-</div>
+</main>
 @endsection
