@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Rest extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'attendance_id',
+        'start_time',
+        'end_time',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

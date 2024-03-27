@@ -32,6 +32,7 @@ class AttendanceController extends Controller
             if ($oldAttendance) {
 
                 $isWorkStarted = $this->didWorkStart($user);
+                // var_dump($isWorkStarted);
                 $isWorkEnded = $this->didWorkEnd();
                 $isRestStarted = $this->didRestStart();
             } else {
@@ -60,12 +61,16 @@ class AttendanceController extends Controller
         $oldAttendance = Attendance::where('user_id', $user->id)->latest()->first();
 
         if ($oldAttendance) {
-            $oldAttendanceDay = new Carbon($oldAttendance->date);
+            $oldAttendanceDay = new Carbon(($oldAttendance->created_at)->setTime(0,0,0));
             $today = Carbon::today();
+            if ($oldAttendance){
 
-            return ($oldAttendanceDay == $today) && ((!$oldAttendance->end_time));
+            }
+            return ($oldAttendanceDay == $today);
         } else {
             return false;
+
+            // ここまでできた
         }
     }
 
@@ -118,20 +123,24 @@ class AttendanceController extends Controller
 
 
 
-//「勤務終了」判定
+//「勤務終了」判定（ここをやった）
     private function didWorkEnd()
     {
         $user = Auth::user();
-        $oldAttendance = Attendance::where('user_id', $user->id)->latest()->first();
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
         $oldDay = '';
 
-        if ($oldAttendance) {
-            $oldDay = new Carbon($oldAttendance->date);
-        }
+        if ($attendance) {
+            $oldDay = new Carbon(($attendance->created_at)->setTime(0,0,0));
+        
+            $today = Carbon::today();
 
-        $today = Carbon::today();
-        //休憩を最低1度以上「開始」と「終了」を両方選択している
-        return ($oldDay == $today);
+            $oldRest = Rest::where('attendance_id', $attendance->id)->latest()->first();
+            if ($oldRest) {
+                //休憩を最低1度以上「開始」と「終了」を両方選択している
+                return !($oldDay == $today && empty($attendance->end_time) && ($oldRest->end_time));
+            }
+        }
     }
 
     //「休憩中」判定
@@ -156,7 +165,49 @@ class AttendanceController extends Controller
             $today = Carbon::today();
 
             //restsテーブルの最新のレコードが今日のデータ、かつ休憩終了がない（レコードがあるということは勤務開始＆休憩開始されている）
-            return ($oldDay == $today) && (!$oldRest->end_time);
+            return ($oldDay == $today) && (!$oldRest->end_time) && !($attendance->end_time);
         }
+    }
+
+
+//休憩開始アクション
+    public function restStart()
+    {
+        $user = Auth::user();
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+
+        //「休憩中」判定
+        $isRestStarted = $this->didRestStart();
+
+        Rest::create([
+            'attendance_id' => $attendance->id,
+            'start_time' => Carbon::now(),
+        ]);
+
+        return redirect()->back()->with([
+            'user' => $user,
+            'isRestStarted' => $isRestStarted,
+        ]);
+    }
+ //休憩終了アクション
+    public function restEnd()
+    {
+        $user = Auth::user();
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+        $oldRest = Rest::where('attendance_id', $attendance->id)->latest()->first();
+
+        $isRestStarted = $this->didRestStart();
+
+        //end_timeが存在しない場合は、end_timeを格納
+        if ($oldRest->start_time && !$oldRest->end_time) {
+            $oldRest->update([
+                'end_time' => Carbon::now(),
+            ]);
+        }
+
+        return redirect()->back()->with([
+            'user' => $user,
+            'isRestStarted' => $isRestStarted,
+        ]);
     }
 }

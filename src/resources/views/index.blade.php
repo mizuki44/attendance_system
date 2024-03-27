@@ -13,7 +13,7 @@
 
 
 
-<main>
+
   <div class="main__title">
     @if(Auth::check())
     <p>{{$user->name}}さんお疲れ様です！</p>
@@ -22,7 +22,7 @@
 
 
 
-  <div class="main__attendance">
+  < class="main__attendance">
     <div class="attendance__left">
 
 
@@ -44,6 +44,11 @@
         @csrf
         <button disabled style="color:gray">休憩開始</button>
       </form>
+        @elseif($isWorkEnded)
+      <form action="/restStart" method="POST" class="timestamp">
+        @csrf
+        <button disabled style="color:gray">休憩開始</button>
+      </form>
       @elseif($isWorkStarted)
       <form action="/restStart" method="POST" class="timestamp">
         @csrf
@@ -56,9 +61,9 @@
       </form>
       @endif
     </div>
-    <div class="attendance__right">
+    < class="attendance__right">
       <!-- 勤務終了 -->
-      @if($isWorkStarted)
+      @if($isWorkStarted && !$isWorkEnded)
       <form action="/workEnd" method="POST" class="timestamp">
         @csrf
         <button class="button3">勤務終了</button>
@@ -74,6 +79,8 @@
         <button disabled style="color:gray">勤務終了</button>
       </form>
       @endif
+
+      
       <!-- 休憩終了 -->
       @if(($isWorkStarted) && ($isRestStarted))
       <form action="/restEnd" method="POST" class="timestamp">
@@ -86,6 +93,9 @@
         <button disabled style="color:gray">休憩終了</button>
       </form>
       @endif
+
+
+
     </div>
   </div>
 </main>
