@@ -168,7 +168,7 @@ class AttendanceController extends Controller
             return ($oldDay == $today) && (!$oldRest->end_time) && !($attendance->end_time);
         }
     }
-
+// 判定の条件が複雑すぎて時間が経つとわからなくなってしまうのですが、綺麗に描くコツはあるのか？
 
 //休憩開始アクション
     public function restStart()
