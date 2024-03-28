@@ -35,10 +35,12 @@ class AttendanceController extends Controller
                 // var_dump($isWorkStarted);
                 $isWorkEnded = $this->didWorkEnd();
                 $isRestStarted = $this->didRestStart();
+                $isRestEnded = $this->didRestEnd();
             } else {
                 $isWorkStarted = false;
                 $isWorkEnded = false;
                 $isRestStarted = false;
+                $isRestEnded = false;
             }
 
             $param = [
@@ -46,6 +48,7 @@ class AttendanceController extends Controller
                 'isWorkStarted' => $isWorkStarted,
                 'isWorkEnded' => $isWorkEnded,
                 'isRestStarted' => $isRestStarted,
+                'isRestEnded' => $isRestEnded,
             ];
             return view('/index', $param);
         } else {
@@ -143,7 +146,7 @@ class AttendanceController extends Controller
         }
     }
 
-    //「休憩中」判定
+    //「休憩開始」判定
     private function didRestStart()
     {
         $user = Auth::user();
@@ -164,8 +167,35 @@ class AttendanceController extends Controller
 
             $today = Carbon::today();
 
+            // restsテーブルの最新のレコードが
+            // 今日のデータ、かつ休憩終了がない（レコードがあるということは勤務開始＆休憩開始されている）-> true
+            return ($oldDay == $today) && empty($oldRest->end_time);
+        }
+    }
+
+    // 「休憩終了」判定
+     private function didRestEnd()
+    {
+        $user = Auth::user();
+        $oldRest = '';
+        $oldDay = '';
+
+        if (Attendance::where('user_id', $user->id)->exists()) {
+            $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+
+            if (Rest::where('attendance_id', $attendance->id)->exists()) {
+                $oldRest = Rest::where('attendance_id', $attendance->id)->latest()->first();
+            }
+
+            if ($oldRest) {
+                $oldRestStartTime = new Carbon($oldRest->start_time);
+                $oldDay = $oldRestStartTime->startOfday();
+            }
+
+            $today = Carbon::today();
+
             //restsテーブルの最新のレコードが今日のデータ、かつ休憩終了がない（レコードがあるということは勤務開始＆休憩開始されている）
-            return ($oldDay == $today) && (!$oldRest->end_time) && !($attendance->end_time);
+            return ($oldDay == $today) && ($oldRest->end_time);
         }
     }
 // 判定の条件が複雑すぎて時間が経つとわからなくなってしまうのですが、綺麗に描くコツはあるのか？
