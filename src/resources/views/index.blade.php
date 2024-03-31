@@ -1,10 +1,8 @@
-@extends('layouts.app')
-@section('css')
-<link rel="stylesheet" href="{{ asset('css/index.css') }}">
-@endsection
+@extends('layouts.default')
+
 
 <head>
-  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/sanitize.css">
   <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -22,7 +20,7 @@
 
 
 
-  < class="main__attendance">
+  <div class="main__attendance">
     <div class="attendance__left">
 
 
@@ -39,7 +37,7 @@
       </form>
       @endif
 
-      
+
       <!-- 休憩開始 -->
       <!-- 出勤開始してたら、かつ休憩開始してたら -->
       @if($isWorkStarted && $isRestStarted)
@@ -72,7 +70,8 @@
       </form>
       @endif
     </div>
-    < class="attendance__right">
+
+    <div class="attendance__right">
       <!-- 勤務終了 -->
       @if($isWorkStarted && !$isWorkEnded)
       <form action="/workEnd" method="POST" class="timestamp">

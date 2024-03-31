@@ -1,0 +1,40 @@
+.user__name {
+    font-weight: bold;
+    text-align: center;
+    padding: 30px;
+    font-size: 30px;
+}
+
+.date form #prev__n,
+#next__n {
+    width: 45px;
+    height: 30px;
+    border-color: #0c7ce4;
+    font-size: 20px;
+    color: #0c7ce4;
+    margin: 0 30px;
+}
+
+.date form #prev__n:hover {
+    color: #fff;
+    background-color: #0c7ce4;
+}
+
+.date form #next__n:hover {
+    color: #fff;
+    background-color: #0c7ce4;
+}
+
+.date__n {
+    font-size: 30;
+    font-weight: bolder;
+    text-align: center;
+    /* padding: 30px;  */
+    /* display: flex; */
+}
+
+.month_chenge {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50;
+}

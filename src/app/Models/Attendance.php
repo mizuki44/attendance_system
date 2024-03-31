@@ -28,6 +28,8 @@ class Attendance extends Model
         'start_time',
         'end_time'
     ];
+    // $fillable=値の登録・書き換えが可能
+    
     protected $hidden = [
         'created_at',
         'updated_at',

@@ -1,0 +1,57 @@
+.main {
+    background-color: #D3D3D3;
+    padding: 20px 0;
+}
+
+.user-title {
+    text-align: center;
+    padding: 30px;
+    font-size: 24px;
+    /* font-weight: bold; */
+}
+
+.user-list {
+    display: flex;
+    justify-content: center;
+}
+
+.user-table {
+    width: 50%;
+}
+
+.user__title h1 {
+    margin-top: -20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.result-table {
+    table-layout: fixed;
+    width: 50%;
+    text-align: center;
+    border-top: 1px solid #000;
+    border-collapse: collapse;
+}
+
+tr th {
+    padding: 15 0
+}
+
+tr td {
+    padding: 15 0;
+}
+
+result-table user-table {
+    table-layout: fixed;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #000;
+    border-collapse: collapse;
+}
+
+.name-button {
+    width: 50%;
+    height: 25;
+    background-color: #e5e3e3;
+    font-weight: bold;
+}

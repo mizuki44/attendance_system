@@ -16,12 +16,6 @@ use DateTime;
 
 class AttendanceController extends Controller
 {
-    // public function index()
-    // {   
-    //     var_dump('index!');
-    //     //ログインページを表示
-    //     return view('index');
-    // }
 
 //打刻ページを表示
     public function index()
@@ -89,7 +83,7 @@ class AttendanceController extends Controller
 
         Attendance::create([
             'user_id' => $user->id,
-            // 'date' => Carbon::today(),
+            'date' => Carbon::today(),
             'start_time' => Carbon::now(),
             'end_time' => null,
         ]);
@@ -198,7 +192,6 @@ class AttendanceController extends Controller
             return ($oldDay == $today) && ($oldRest->end_time);
         }
     }
-// 判定の条件が複雑すぎて時間が経つとわからなくなってしまうのですが、綺麗に描くコツはあるのか？
 
 //休憩開始アクション
     public function restStart()
@@ -238,6 +231,207 @@ class AttendanceController extends Controller
         return redirect()->back()->with([
             'user' => $user,
             'isRestStarted' => $isRestStarted,
+        ]);
+    }
+
+
+
+
+//勤務時間-休憩時間の計算
+    private function actualWorkTime($attendanceToday, $restTimeDiffInSecondsTotal)
+    {
+        //勤務時間の算出
+        $attendanceStartTime = $attendanceToday->start_time;
+        // ↑ここは何を示しているのか？attendanceテーブルからstart_timeを取ってきてるのか？
+        $attendanceStartTimeCarbon = new Carbon($attendanceToday->start_time);
+        $attendanceEndTime = $attendanceToday->end_time;
+        $attendanceEndTimeCarbon = new Carbon($attendanceToday->end_time);
+        $workTimeDiffInSeconds = $attendanceEndTimeCarbon->diffInSeconds($attendanceStartTimeCarbon);
+        // ↑差分が秒になる
+        $workTimeSeconds = floor($workTimeDiffInSeconds % 60);
+        // $workTimeDiffInSecondsを60で割った余りを求めることによって秒数を算出
+        $workTimeMinutes = floor($workTimeDiffInSeconds / 60);
+        //秒数から分数に直すため、60で割る
+        $workTimeHours = floor($workTimeMinutes / 60);
+        // 分数から時間に直すために60で割る
+        $workTime = $workTimeHours . ":" . $workTimeMinutes . ":" . $workTimeSeconds;
+
+        //合算された休憩時間を整形する
+        $restTimeSeconds = floor($restTimeDiffInSecondsTotal % 60);
+        $restTimeMinutes = floor($restTimeDiffInSecondsTotal / 60);
+        $restTimeHours = floor($restTimeMinutes / 60);
+        $restTime = $restTimeHours . ":" . $restTimeMinutes . ":" . $restTimeSeconds;
+
+        //実労働時間の算出
+        $actualWorkTimeDiffInSeconds = $workTimeDiffInSeconds - $restTimeDiffInSecondsTotal;
+        // 勤務時間ー休憩時間
+        $actualWorkTimeSeconds = floor($actualWorkTimeDiffInSeconds % 60);
+        $actualWorkTimeMinutes = floor($actualWorkTimeDiffInSeconds / 60);
+        $actualTimeHours = floor($actualWorkTimeMinutes / 60);
+        $actualWorkTime = $actualTimeHours . ":" . $actualWorkTimeMinutes . ":" . $actualWorkTimeSeconds;
+        // 実労働時間
+               $userId = User::where('id', $attendanceToday->user_id)->first();
+        $name = $userId->name;
+
+        $date = $attendanceToday->date;
+
+
+        $param = [
+            'name' =>$name,
+            'date'=>$date,
+            'attendanceStartTime' => $attendanceStartTime,
+            'attendanceEndTime' => $attendanceEndTime,
+            'restTime' => $restTime,
+            'actualWorkTime' => $actualWorkTime,
+        ];
+        //  $paramはまとめて返す箱。returnは1個しか返せないから
+        return $param;
+    }
+
+//一つ一つの休憩について休憩時間を計算
+    private function calculateRestTime($restToday)
+    {
+        $restStartTime = new Carbon($restToday->start_time);
+        $restEndTime = new Carbon($restToday->end_time);
+        $restTimeDiffInSeconds = $restEndTime->diffInSeconds($restStartTime);
+        return $restTimeDiffInSeconds;
+    }
+
+
+
+
+//「日付一覧」で表示される、全ユーザーの日付別勤怠情報
+    public function getAttendances(Request $request)
+    {
+        if (is_null($request->date)) {
+            $yesterday = Carbon::yesterday();
+            $today = Carbon::today();
+            $tomorrow = Carbon::tomorrow();
+        } else {
+            $today = new Carbon($request->date);
+            $yesterday = (new Carbon($request->date))->subDay();
+            $tomorrow = (new Carbon($request->date))->addDay();
+        }
+        // $prevOrNext = $request->changeDay;
+
+        $resultArray[] = array();
+        $i = 0;
+
+        $attendanceTodayAll = Attendance::where('date', $today->format('Y-m-d'))->get();
+        // $today:                  "2024-04-01 00:00:00.000000"
+        // $today->format('Y-m-d'): "2024-04-01"
+        // ↑'date'絡むに対して「$today->format('Y-m-d'）」これと同じものがあったら取ってきてください
+        foreach ($attendanceTodayAll as $attendanceToday) {
+            if ($attendanceToday->end_time) {
+                $restTodayAll = Rest::where('attendance_id',
+                $attendanceToday->id)->get();
+
+                $restTimeDiffInSecondsTotal = 0;
+// 計算をするときは0をとりあえず入れる
+                foreach ($restTodayAll as $restToday) {
+                    $restTime = $this->calculateRestTime($restToday);
+                    $restTimeDiffInSecondsTotal = $restTime;
+                }
+
+                $result = $this->actualWorkTime($attendanceToday, $restTimeDiffInSecondsTotal);
+                $resultArray[$i] = $result;
+                $i++;
+                //配列の順番に結果を入れるために1ずつ足す
+            }
+        }
+        
+
+        $attendances = $this->paginate($resultArray, 5, null, ['path' => "/attendance_list?date={$today->format('Y-m-d')}"]);
+        // &changeDay={$prevOrNext}
+            // 5件表示したら次ページへ
+        return view('/attendance_list')->with([
+            'today' => $today,
+            'yesterday' => $yesterday,
+            'tomorrow' => $tomorrow,
+            'attendances' => $attendances,
+        ]);
+    }
+
+//配列をページネート
+    private function paginate($items, $perPage, $page, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator(
+            $items->forPage($page, $perPage),
+            $items->count(),
+            $perPage,
+            $page,
+            $options
+        );
+    }
+
+//ユーザー一覧ページ(user_page)
+    public function getUserList()
+    {
+
+        $getUsers = User::select('id','name', 'email')->get();
+
+        $usersArray[] = array();
+        $i = 0;
+
+        foreach ($getUsers as $user) {
+            $usersArray[$i] = $user;
+            $i++;
+        }
+          $users = $this->paginate($usersArray, 10, null, ['path' => "/user_page"]);
+
+
+        return view('/user_page')->with([
+            'users' => $users
+        ]);
+    }
+
+//ユーザー別勤怠一覧の取得(user_list)
+    public function listbyUser(Request $request)
+    {
+        $name = $request->name;
+        $userId= $request->id;
+        $resultArray[] = array();
+        $i = 0;
+
+
+
+        
+        $userAttendanceAll = Attendance::where('user_id', $userId)->get();
+        Attendance::where('date', $userId)->get();
+
+        foreach ($userAttendanceAll as $userAttendance) {
+            if ($userAttendance->end_time) {
+                $userRestAll = Rest::where(
+                    'attendance_id',
+                    $userAttendance->id
+                )->get();
+
+                $restTimeDiffInSecondsTotal = 0;
+   foreach ($userRestAll as $userRest) {
+                    $restTime = $this->calculateRestTime($userRest);
+                    $restTimeDiffInSecondsTotal += $restTime;
+                }
+
+                $result = $this->actualWorkTime($userAttendance, $restTimeDiffInSecondsTotal);
+                $resultArray[$i] = $result;
+                $i++;
+            }
+        }
+
+        $attendances = $this->paginate(
+            $resultArray,
+            5,
+            null,
+            ['path' => "/user_list?name={$name}"]
+        );
+
+        return view('/user_list')->with([
+            'attendances' => $attendances,
+            'name' => $name,
+            'date' => $date,
+            'today' => $today,
         ]);
     }
 }
