@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 <head>
   <link rel="stylesheet" href="/css/sanitize.css">
-  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/css/attendance_list.css">
 
 </head>
 @section('title', '日付一覧')
@@ -29,7 +29,7 @@ use Carbon\Carbon;
   </div>
 
   <div class="list">
-    <table class="attandance_list">
+    <table class="attendance_list">
       <tr class="table-title">
         <th>名前</th>
         <th>勤務開始</th>

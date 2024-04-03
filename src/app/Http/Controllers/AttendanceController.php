@@ -240,9 +240,10 @@ class AttendanceController extends Controller
 //勤務時間-休憩時間の計算
     private function actualWorkTime($attendanceToday, $restTimeDiffInSecondsTotal)
     {
+        // public function getAttendancesで値を入れて渡してる
         //勤務時間の算出
         $attendanceStartTime = $attendanceToday->start_time;
-        // ↑ここは何を示しているのか？attendanceテーブルからstart_timeを取ってきてるのか？
+        // $attendanceTodayは渡してる元を見ると何が入っているかわかる
         $attendanceStartTimeCarbon = new Carbon($attendanceToday->start_time);
         $attendanceEndTime = $attendanceToday->end_time;
         $attendanceEndTimeCarbon = new Carbon($attendanceToday->end_time);

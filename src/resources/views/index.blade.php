@@ -11,7 +11,7 @@
 
 
 
-
+<main>
   <div class="main__title">
     @if(Auth::check())
     <p>{{$user->name}}さんお疲れ様です！</p>

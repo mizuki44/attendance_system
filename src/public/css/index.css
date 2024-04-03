@@ -20,7 +20,7 @@ main {
     justify-content: center;
     margin-bottom: 50px;
     padding-top: 30px;
-}
+    }
 
 .timestamp button {
     padding: 75px 165px;
@@ -28,11 +28,14 @@ main {
     font-size: 20px;
     margin-bottom: 40px;
     border: none;
+    background-color: white;
 }
 
 button {
     padding: 65px 180px;
     font-size: 20px;
+    background-color: white;
+   
     /* font-weight: bold; */
     /* margin-bottom: 40px; */
 }
