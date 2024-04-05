@@ -251,25 +251,29 @@ class AttendanceController extends Controller
         // ↑差分が秒になる
         $workTimeSeconds = floor($workTimeDiffInSeconds % 60);
         // $workTimeDiffInSecondsを60で割った余りを求めることによって秒数を算出
-        $workTimeMinutes = floor($workTimeDiffInSeconds / 60);
+        $workTimeMinutes = floor($workTimeDiffInSeconds % 3600);
+        $workTimeHours = floor($workTimeDiffInSeconds / 3600);
+        // $workTimeMinutes = floor($workTimeDiffInSeconds / 60);
         //秒数から分数に直すため、60で割る
-        $workTimeHours = floor($workTimeMinutes / 60);
+        // $workTimeHours = floor($workTimeMinutes / 60);
         // 分数から時間に直すために60で割る
+        // var_dump($workTimeDiffInSeconds);
         $workTime = $workTimeHours . ":" . $workTimeMinutes . ":" . $workTimeSeconds;
 
         //合算された休憩時間を整形する
-        $restTimeSeconds = floor($restTimeDiffInSecondsTotal % 60);
-        $restTimeMinutes = floor($restTimeDiffInSecondsTotal / 60);
-        $restTimeHours = floor($restTimeMinutes / 60);
-        $restTime = $restTimeHours . ":" . $restTimeMinutes . ":" . $restTimeSeconds;
+         $restTimeSeconds = floor($restTimeDiffInSecondsTotal % 60);
+        $restTimeMinutes = floor(($restTimeDiffInSecondsTotal % 3600) / 60);
+        $restTimeHours = floor($restTimeDiffInSecondsTotal / 3600);
+        $restTime = sprintf('%02d',$restTimeHours) . ":" . sprintf('%02d',$restTimeMinutes) . ":" . sprintf('%02d',$restTimeSeconds);
+
 
         //実労働時間の算出
         $actualWorkTimeDiffInSeconds = $workTimeDiffInSeconds - $restTimeDiffInSecondsTotal;
         // 勤務時間ー休憩時間
         $actualWorkTimeSeconds = floor($actualWorkTimeDiffInSeconds % 60);
-        $actualWorkTimeMinutes = floor($actualWorkTimeDiffInSeconds / 60);
-        $actualTimeHours = floor($actualWorkTimeMinutes / 60);
-        $actualWorkTime = $actualTimeHours . ":" . $actualWorkTimeMinutes . ":" . $actualWorkTimeSeconds;
+        $actualWorkTimeMinutes = floor(($actualWorkTimeDiffInSeconds % 3600) / 60);
+        $actualTimeHours = floor($actualWorkTimeDiffInSeconds  / 3600);
+        $actualWorkTime = sprintf('%02d',$actualTimeHours) . ":" . sprintf('%02d',$actualWorkTimeMinutes) . ":" . sprintf('%02d',$actualWorkTimeSeconds);
         // 実労働時間
                $userId = User::where('id', $attendanceToday->user_id)->first();
         $name = $userId->name;
@@ -285,7 +289,7 @@ class AttendanceController extends Controller
             'restTime' => $restTime,
             'actualWorkTime' => $actualWorkTime,
         ];
-        //  $paramはまとめて返す箱。returnは1個しか返せないから
+        //  $paramはまとめて返す箱。returnは1個しか返せない
         return $param;
     }
 
@@ -295,6 +299,10 @@ class AttendanceController extends Controller
         $restStartTime = new Carbon($restToday->start_time);
         $restEndTime = new Carbon($restToday->end_time);
         $restTimeDiffInSeconds = $restEndTime->diffInSeconds($restStartTime);
+         $restTimeSeconds = floor($restTimeDiffInSeconds % 60);
+        $restTimeMinutes = floor(($restTimeDiffInSeconds % 3600) / 60);
+        $restTimeHours = floor($restTimeDiffInSeconds / 3600);
+        $restTime = sprintf('%02d',$restTimeHours) . ":" . sprintf('%02d',$restTimeMinutes) . ":" . sprintf('%02d',$restTimeSeconds);
         return $restTimeDiffInSeconds;
     }
 
@@ -331,9 +339,10 @@ class AttendanceController extends Controller
 // 計算をするときは0をとりあえず入れる
                 foreach ($restTodayAll as $restToday) {
                     $restTime = $this->calculateRestTime($restToday);
-                    $restTimeDiffInSecondsTotal = $restTime;
-                }
+                    // $restTodayをcalculateRestTimeで計算して、$restTimeに渡してる
 
+                    $restTimeDiffInSecondsTotal = $restTimeDiffInSecondsTotal + $restTime;
+                }
                 $result = $this->actualWorkTime($attendanceToday, $restTimeDiffInSecondsTotal);
                 $resultArray[$i] = $result;
                 $i++;
