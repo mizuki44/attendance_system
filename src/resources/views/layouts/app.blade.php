@@ -44,7 +44,9 @@
     @yield('content')
   </main>
 
+  <footer>
+    <small>Atte, Inc.</small>
+  </footer>
 
 </body>
-
 </html>

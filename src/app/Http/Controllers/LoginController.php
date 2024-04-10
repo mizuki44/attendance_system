@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     public function getIndex()
     {
-        var_dump('test');
+        // var_dump('');
         //ログインページを表示
         return view('auth.login');
         // view→auth→login
