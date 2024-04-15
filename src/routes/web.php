@@ -19,34 +19,38 @@ use App\Http\Controllers\LoginController;
 
 // Route::get('/', [AuthController::class, 'index']);
 // Route::get('/', [AuthController::class, 'index']);
-Route::middleware('auth')->group(function (){
-        Route::get('/',[AuthController::class, 'index']);
-});
+
+// Route::middleware('auth')->group(function (){
+//         Route::get('/',[AuthController::class, 'index']);
+// });
 
 
 
 
 Route::get('/', [RestController::class, 'index'])->name('rest.index')->middleware('auth');
 
+Route::get('/', [AttendanceController::class, 'index'])->middleware('verified');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-Route::get('/', function () {
-    return view('index');
-});
+// Route::get('/', function () {
+//     return view('index');
+// })->middleware(['auth', 'verified'])->name('index');
+// Route::get('/', function () {
+//     return view('index');
+// });
 
 // require __DIR__.'/auth.php';
 
-
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 
 // ログインページ
 Route::get('/login', [LoginController::class, 'getIndex'])->name('login');
 Route::post('/login', [LoginController::class, 'postIndex'])->name('login');
 
-Route::get('/', [AttendanceController::class, 'index'])->middleware('auth');
-Route::post('/', [AttendanceController::class, 'index'])->middleware('auth');
+// Route::get('/', [AttendanceController::class, 'index'])->middleware('auth');
+// Route::post('/', [AttendanceController::class, 'index'])->middleware('auth');
 
 
 
@@ -62,3 +66,4 @@ Route::get('/attendance_list/{num}', [AttendanceController::class, 'getAttendanc
 // Route::get('/user_list', [AttendanceController::class, 'listbyUser']);
 // Route::get('/user_page', [AttendanceController::class, 'getUserList']);
 // Route::get('/user_list?name={$username}"', [AttendanceController::class, 'listbyUser']);
+

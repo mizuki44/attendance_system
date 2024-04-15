@@ -251,14 +251,14 @@ class AttendanceController extends Controller
         // ↑差分が秒になる
         $workTimeSeconds = floor($workTimeDiffInSeconds % 60);
         // $workTimeDiffInSecondsを60で割った余りを求めることによって秒数を算出
-        $workTimeMinutes = floor($workTimeDiffInSeconds % 3600);
+        $workTimeMinutes = floor(($workTimeDiffInSeconds % 3600) / 60);
         $workTimeHours = floor($workTimeDiffInSeconds / 3600);
         // $workTimeMinutes = floor($workTimeDiffInSeconds / 60);
         //秒数から分数に直すため、60で割る
         // $workTimeHours = floor($workTimeMinutes / 60);
         // 分数から時間に直すために60で割る
         // var_dump($workTimeDiffInSeconds);
-        $workTime = $workTimeHours . ":" . $workTimeMinutes . ":" . $workTimeSeconds;
+        $workTime = sprintf('%02d',$workTimeHours) . ":" . sprintf('%02d',$workTimeMinutes) . ":" . sprintf('%02d',$workTimeSeconds);
 
         //合算された休憩時間を整形する
          $restTimeSeconds = floor($restTimeDiffInSecondsTotal % 60);
