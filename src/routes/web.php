@@ -63,7 +63,8 @@ Route::post('/restEnd', [AttendanceController::class, 'restEnd']);
 Route::get('/attendance_list', [AttendanceController::class, 'getAttendances']);
 Route::get('/attendance_list/{num}', [AttendanceController::class, 'getAttendances']);
 
-// Route::get('/user_list', [AttendanceController::class, 'listbyUser']);
-// Route::get('/user_page', [AttendanceController::class, 'getUserList']);
-// Route::get('/user_list?name={$username}"', [AttendanceController::class, 'listbyUser']);
+// ユーザー一覧ページ
+Route::get('/user_list', [AttendanceController::class, 'listbyUser']);
+Route::get('/user_page', [AttendanceController::class, 'getUserList']);
+Route::get('/user_list?name={$username}', [AttendanceController::class, 'listbyUser']);
 

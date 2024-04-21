@@ -31,6 +31,10 @@ use Carbon\Carbon;
             <a href="/attendance_list?date={{Carbon::today()->format('Y-m-d')}}">日付一覧</a>
           </li>
           <li class="nav__item">
+            <a href="/user_page">ユーザー一覧</a>
+          </li>
+          <!-- ユーザー一覧だけAuthを切ルカ？ -->
+          <li class="nav__item">
             <form action="{{route('logout')}}" method="post">
               @csrf
               <button class="nav__logout">ログアウト</button>

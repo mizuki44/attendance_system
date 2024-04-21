@@ -367,6 +367,10 @@ class AttendanceController extends Controller
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
+        // $items = $items instanceof Collection ：$itemsが配列かどうか？を判定している
+        // 三項演算子　条件式 ? 真の式 : 偽の式
+        // 配列だったら$itemsを$itemsへ返す、配列じゃなかったらCollection::make($items)（$itemsを配列化）してから$itemsへ渡す
+
         return new LengthAwarePaginator(
             $items->forPage($page, $perPage),
             $items->count(),
@@ -376,20 +380,20 @@ class AttendanceController extends Controller
         );
     }
 
-//ユーザー一覧ページ(user_page)
+//ユーザー一覧ページ(user_page)ここは何をやっているのか？
     public function getUserList()
     {
-
+var_dump('test');
         $getUsers = User::select('id','name', 'email')->get();
 
         $usersArray[] = array();
         $i = 0;
-
+// ↑これは何？
         foreach ($getUsers as $user) {
             $usersArray[$i] = $user;
             $i++;
         }
-          $users = $this->paginate($usersArray, 10, null, ['path' => "/user_page"]);
+          $users = $this->paginate($usersArray, 5, null, ['path' => "/user_page"]);
 
 
         return view('/user_page')->with([
@@ -400,17 +404,17 @@ class AttendanceController extends Controller
 //ユーザー別勤怠一覧の取得(user_list)
     public function listbyUser(Request $request)
     {
-        $name = $request->name;
-        $userId= $request->id;
+        $id = $request->input('id');
+        $user = User::find($id);
+        // find:idを含むレコードを取ってくる
+        $name = $user -> name;
+        $userId= $user -> id;
         $resultArray[] = array();
         $i = 0;
 
-
-
-        
         $userAttendanceAll = Attendance::where('user_id', $userId)->get();
         Attendance::where('date', $userId)->get();
-
+// $userAttendanceAll にuser_idとdateを入れてる
         foreach ($userAttendanceAll as $userAttendance) {
             if ($userAttendance->end_time) {
                 $userRestAll = Rest::where(
@@ -418,15 +422,19 @@ class AttendanceController extends Controller
                     $userAttendance->id
                 )->get();
 
+// 出勤し終えていたらレストテーブルのアテンダンスIDを取ってくる
+
                 $restTimeDiffInSecondsTotal = 0;
-   foreach ($userRestAll as $userRest) {
+        foreach ($userRestAll as $userRest) {
                     $restTime = $this->calculateRestTime($userRest);
                     $restTimeDiffInSecondsTotal += $restTime;
                 }
 
                 $result = $this->actualWorkTime($userAttendance, $restTimeDiffInSecondsTotal);
+                // $userAttendance, $restTimeDiffInSecondsTotalをactualWorkTimeに渡して、計算させて$resultに入れている
                 $resultArray[$i] = $result;
                 $i++;
+                // ここで足してるのはなんで？
             }
         }
 
@@ -434,14 +442,12 @@ class AttendanceController extends Controller
             $resultArray,
             5,
             null,
-            ['path' => "/user_list?name={$name}"]
+            ['path' => "/user_list?id={$id}"]
         );
 
         return view('/user_list')->with([
             'attendances' => $attendances,
-            'name' => $name,
-            'date' => $date,
-            'today' => $today,
+            'user'  => $user,
         ]);
     }
 }

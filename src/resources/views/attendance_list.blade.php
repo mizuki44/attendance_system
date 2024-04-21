@@ -40,7 +40,6 @@ use Carbon\Carbon;
 
       @foreach($attendances as $attendance)
       <form action="/getAttendance" method="get">
-<!-- var_dump($attendance); -->
       @if(!empty($attendance))
         <tr class="table-value table-value-info">
           <td>{{$attendance['name']}}</td>

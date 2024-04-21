@@ -13,6 +13,7 @@
 .user-list {
     display: flex;
     justify-content: center;
+    padding-bottom: 50px;
 }
 
 .user-table {

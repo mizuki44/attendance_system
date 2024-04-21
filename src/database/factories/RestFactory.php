@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Rest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RestFactory extends Factory
@@ -14,8 +15,7 @@ class RestFactory extends Factory
     public function definition()
     {
         return [
-        'user_id' => $this->faker->numberBetween(1,100),
-        // ↑外部キー制約ありエラー出る。親データがないから？
+            'attendance_id'=>\App\Models\Attendance::factory(),
             'start_time' => $this->faker->Datetime(),
             'end_time'=> $this->faker->Datetime(),
             'created_at' => $this->faker->Datetime(),

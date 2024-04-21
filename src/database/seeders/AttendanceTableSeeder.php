@@ -4,8 +4,11 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Attendance;
-use App\Models\Rest;
+use Illuminate\Support\Str; //追加
+use Illuminate\Support\Facades\Hash; //追加
+use App\User;
+use Faker\Provider\DateTime; // 追加
+
 
 class AttendanceTableSeeder extends Seeder
 {
@@ -16,7 +19,14 @@ class AttendanceTableSeeder extends Seeder
      */
     public function run()
     {
-        Attendance::factory()->count(3)->create();
-       
+         DB::table('attendances')->insert([
+            [
+                'start_time' => DateTime::dateTimeThisDecade(),
+                'end_time'   => DateTime::dateTimeThisDecade(),
+                'created_at' => DateTime::dateTimeThisDecade(),
+                'updated_at' => DateTime::dateTimeThisDecade(),
+            ],
+
+        ]);
     }
 }
