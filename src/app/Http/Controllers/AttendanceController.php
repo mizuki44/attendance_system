@@ -383,7 +383,6 @@ class AttendanceController extends Controller
 //ユーザー一覧ページ(user_page)ここは何をやっているのか？
     public function getUserList()
     {
-var_dump('test');
         $getUsers = User::select('id','name', 'email')->get();
 
         $usersArray[] = array();
