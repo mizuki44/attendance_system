@@ -12,6 +12,9 @@ main {
     height: 82vh;
 }
 
+h2 {
+    font-size: large;
+}
 .register-form__content {
     margin: 0 auto;
     padding: 30px 15px;
@@ -44,17 +47,21 @@ main {
 .form__error {
     height: 20px;
     color: #ff0000;
-    text-align: left;
-}
+    padding-left: 25vw;
+    font-size: smaller;
+    font-weight: 100;
+    }
+
 
 .form__input--text input {
     padding: 1px;
     width: 50%;
     height: 45px;
-    border: 1px solid #808080;
+    border: 1.5px solid #808080;
     border-radius: 3px;
     appearance: none;
     background-color: #f5f5f5;
+    padding-left: 10px;
 }
 
 .form__button {
@@ -77,6 +84,12 @@ main {
 .login__link {
     margin-top: 20px;
     text-align: center;
+    font-size: small;
+    color: #808080;
+    padding-top: 1%;
+}
+.login__link p {
+    padding-bottom: 5px;
 }
 
 footer {

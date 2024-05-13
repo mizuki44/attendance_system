@@ -25,8 +25,9 @@ r
 .header__logo {
     color: black;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 24px;
+    padding-left: 25px;
 }
 
 .header-utilities nav {
