@@ -24,7 +24,6 @@
     <div class="attendance__left">
 
 
-      <!-- 勤務開始 -->
       @if($isWorkStarted)
       <form action="/workStart" method="POST" class="timestamp">
         @csrf
@@ -38,26 +37,24 @@
       @endif
 
 
-      <!-- 休憩開始 -->
-      <!-- 出勤開始してたら、かつ休憩開始してたら -->
       @if($isWorkStarted && $isRestStarted)
       <form action="/restStart" method="POST" class="timestamp">
         @csrf
         <button disabled style="color:gray">休憩開始</button>
       </form>
-      <!-- 勤務終了してたら -->
+
       @elseif($isWorkEnded)
       <form action="/restStart" method="POST" class="timestamp">
         @csrf
         <button disabled style="color:gray">休憩開始</button>
       </form>
-      <!-- 休憩終了してたら -->
+
         @elseif($isRestEnded)
       <form action="/restStart" method="POST" class="timestamp">
         @csrf
         <button class="button2">休憩開始</button>
       </form>
-      <!-- 勤務開始してたら -->
+
       @elseif($isWorkStarted)
       <form action="/restStart" method="POST" class="timestamp">
         @csrf
@@ -72,7 +69,7 @@
     </div>
 
     <div class="attendance__right">
-      <!-- 勤務終了 -->
+
       @if($isWorkStarted && !$isWorkEnded)
       <form action="/workEnd" method="POST" class="timestamp">
         @csrf

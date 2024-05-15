@@ -29,8 +29,6 @@
     font-size: 30;
     font-weight: bolder;
     text-align: center;
-    /* padding: 30px;  */
-    /* display: flex; */
 }
 
 .month_chenge {
@@ -38,10 +36,6 @@
     justify-content: center;
     margin-bottom: 50;
 }
-
-
-
-
 
 .table-title {
     border-bottom: solid 1px #a9a9a9;
@@ -58,11 +52,8 @@
 .attendance_list {
     display: flex;
     align-items: center;
-    /* flex-direction: row; */
     text-align: center;
     justify-content: center;
-
-
 }
 
 .attendance_list th {

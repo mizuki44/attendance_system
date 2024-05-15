@@ -7,8 +7,8 @@ use Carbon\Carbon;
 <head>
   <link rel="stylesheet" href="/css/sanitize.css">
   <link rel="stylesheet" href="/css/attendance_list.css">
-
 </head>
+
 @section('title', '日付一覧')
 @section('content')
 
@@ -19,13 +19,16 @@ use Carbon\Carbon;
       <button name="date" id="prev" value="{{ $yesterday->format('Y-m-d')}}"> &lt;
       </button>
     </form>
+
     <p class="date__today">
       {{ $today->format('Y-m-d') }}
     </p>
+
     <form action="/attendance_list" method="get">
       @csrf
       <button name="date" type="date" id="next" value="{{ $tomorrow->format('Y-m-d') }}"> &gt;</button>
     </form>
+
   </div>
 
   <div class="list">
@@ -53,11 +56,13 @@ use Carbon\Carbon;
       @endforeach
     </table>
   </div>
+
   <div class="paginate">
     <form action="/attendance_list/{num}}" method="get">
       <input type="hidden" name="date" value="{{ $today->format('Y-m-d') }}">
       {{ $attendances->links() }}
     </form>
   </div>
+  
 </main>
 @endsection

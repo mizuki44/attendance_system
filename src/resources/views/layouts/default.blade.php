@@ -33,7 +33,6 @@ use Carbon\Carbon;
           <li class="nav__item">
             <a href="/user_page">ユーザー一覧</a>
           </li>
-          <!-- ユーザー一覧だけAuthを切ルカ？ -->
           <li class="nav__item">
             <form action="{{route('logout')}}" method="post">
               @csrf
@@ -46,9 +45,11 @@ use Carbon\Carbon;
     </div>
   </header>
   @yield('content')
+
   <footer>
     <small>Atte, Inc.</small>
   </footer>
+  
 </body>
 
 </html>

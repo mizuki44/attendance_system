@@ -18,12 +18,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(App\Http\Controllers\RouteServiceProvider::HOME);
     }
-
-    // public function index()
-    // {
-    //     return view('index');
-    // }
     
 }

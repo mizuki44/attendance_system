@@ -11,10 +11,7 @@ class LoginController extends Controller
 {
     public function getIndex()
     {
-        // var_dump('');
-        //ログインページを表示
         return view('auth.login');
-        // view→auth→login
     }
 
     public function postIndex(LoginRequest $request)
@@ -25,10 +22,8 @@ class LoginController extends Controller
             'email' => $email,
             'password' => $password
         ])) {
-            //ログイン成功
             return redirect('/');
         } else {
-            //ログイン失敗
             return redirect('/login');
         }
     }

@@ -21,47 +21,8 @@
   </div>
 
 
-
-
-  <!-- <div class="date">
-    <form action="/user_list" method="get">
-      @csrf
-      <button name="date_n" id="prev__n" value=""> &lt;
-      </button>
-    </form>
-    <div class="date__n">
-      <p class="date__today">
-      </p>
-    </div>
-    <form action="/user_list" method="get">
-      @csrf
-      <button name="date_n" id="next__n" value=""> &gt;
-      </button>
-    </form>
-  </div> -->
-
-  <!-- <div class="month_chenge">
-    <form action="/user_list" method="get">
-      <label for="time">月の変更：</label>
-      <select name=" month" id="selectMonth">
-        <option value="">-</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-      </select>月
-      <input type="submit" value="変更">
-    </form>
-  </div> -->
   <div class="list">
+
     <table class="attendance_list">
       <tr class="table-title">
         <th>日付</th>
@@ -83,15 +44,20 @@
           @endif
         </tr>
       </form>
+
       @endforeach
+
     </table>
+
     <div class="paginate">
       <form action="/user_list?name={$name}" method="get">
         <input type="hidden" name="date" value="date">
         {{ $attendances->links() }}
       </form>
     </div>
+
   </div>
+  
 </main>
 @endsection
 
