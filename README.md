@@ -38,7 +38,8 @@ mailhog:http://localhost:8025/<br>
 
 
 ## ER図
-<img width="944" alt="スクリーンショット 2024-05-15 18 16 53" src="https://github.com/Binse-Park/Parser-android-s-dumpstate/assets/149504438/b846b15a-8591-41a5-97f4-14fade3588bc">
+<img width="763" alt="スクリーンショット 2024-05-16 21 15 49" src="https://github.com/mizuki44/ability-test/assets/149504438/cfc5e1cf-af43-4f10-ae6c-2a710932fd78">
+
 
 
 ## 環境構築
